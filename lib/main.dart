@@ -1,4 +1,5 @@
 import 'package:calculator_app/pages/homepage.dart';
+import 'package:calculator_app/pages/utils/settingspage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Homepage(),
+      routes: {
+        '/settingspage' :(context) => Settingspage()
+      },
     );
   }
 }

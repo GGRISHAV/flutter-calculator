@@ -1,3 +1,4 @@
+import 'package:calculator_app/pages/utils/settingspage.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
@@ -52,11 +53,11 @@ class _HomepageState extends State<Homepage> {
   String _result = '';
 
   final List<dynamic> buttons = [
-    'C', '( )', '%', '/',
-    '7', '8', '9', '*',
+    'C', '( )', '%', '÷',
+    '7', '8', '9', '×',
     '4', '5', '6', '-',
     '1', '2', '3', '+',
-    '0', '.', Icon(Icons.settings, size: 40), '=',
+    '0', '.', Icon(Icons.backspace, size: 35), '=',
   ];
 
   String _calculate(String expr) {
@@ -100,16 +101,30 @@ class _HomepageState extends State<Homepage> {
                           if (buttonText == 'C') {
                             _input = '';
                             _result = '';
-                          } else if (buttonText == '=') {
-                            try {
-                              final expression = _input.replaceAll('×', '*').replaceAll('÷', '/');
-                              _result = _calculate(expression);
-                            } catch (e) {
-                              _result = 'Error';
-                            }
-                          } else if (buttonText is String) {
-                            _input += buttonText;
-                          }
+                          } else if (buttonText == '( )') {
+                              int open = '('.allMatches(_input).length;
+                              int close = ')'.allMatches(_input).length;
+                              if (open == close) {
+                                _input += '(';
+                              } else {
+                                _input += ')';
+                              }
+                            } else if (buttonText == '=') {
+                              try {
+                                final expression = _input.replaceAll('×', '*').replaceAll('÷', '/');
+                                _result = _calculate(expression);
+                              } catch (e) {
+                                _result = 'Error';
+                              }
+                            } else if (buttonText is String) {
+                                _input += buttonText;
+                              } else if (buttonText is Icon) {
+                                // Assuming it's the backspace button
+                                if (_input.isNotEmpty) {
+                                  _input = _input.substring(0, _input.length - 1);
+                                }
+                              }
+
                         });
                       },
                 
@@ -181,7 +196,48 @@ Widget outputpart() {
                 ),
               ),
             ),
+      ),
+
+
+      SafeArea(
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: BounceButton(
+              child: Icon(
+                Icons.settings,
+                color: const Color.fromARGB(255, 87, 85, 85),
+                size: 35,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: Duration(milliseconds: 300),
+                    pageBuilder: (_, __, ___) => Settingspage(), 
+                    transitionsBuilder: (_, animation, __, child) {
+                      const begin = Offset(1.0, 0.0);
+                      const end = Offset.zero;
+                      const curve = Curves.ease;
+
+                      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                      final offsetAnimation = animation.drive(tween);
+
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }
+
+            )
           ),
+        
+        ),
+      )
     ],
   );
 }
