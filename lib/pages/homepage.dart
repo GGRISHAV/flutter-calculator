@@ -1,6 +1,7 @@
 import 'package:calculator_app/pages/utils/settingspage.dart';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:flutter/services.dart';
 
 class Homepage extends StatefulWidget {
 
@@ -26,7 +27,12 @@ class _BounceButtonState extends State<BounceButton> {
 
   double scale = 1.0;
 
-  void _ontapdown(_) => setState(() => scale = 0.9);
+  void _ontapdown(_){
+    HapticFeedback.lightImpact();
+    setState(() {
+      scale = 0.9;
+    });
+  }
   void _ontapup(_) => setState(() => scale = 1.0);
   void _ontapcancel() => setState(() => scale = 1.0);
 
